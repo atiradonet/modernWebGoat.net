@@ -6,7 +6,7 @@ using ModernWebGoat.Models;
 
 namespace ModernWebGoat.Endpoints;
 
-public static class A04_InsecureDesign
+public static class A06_InsecureDesign
 {
     private static string Md5Hash(string input)
     {
@@ -14,12 +14,12 @@ public static class A04_InsecureDesign
         return Convert.ToHexString(bytes).ToLower();
     }
 
-    public static void MapA04InsecureDesignEndpoints(this WebApplication app)
+    public static void MapA06InsecureDesignEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api").WithTags("A04 - Insecure Design");
+        var group = app.MapGroup("/api").WithTags("A06 - Insecure Design");
 
-        // VULNERABILITY A04: Negative quantity allows credit — business logic flaw
-        // VULNERABILITY A04: Coupon can be reused unlimited times
+        // VULNERABILITY A06: Negative quantity allows credit — business logic flaw
+        // VULNERABILITY A06: Coupon can be reused unlimited times
         group.MapPost("/orders", async (OrderRequest request, AppDbContext db) =>
         {
             var product = await db.Products.FindAsync(request.ProductId);
@@ -64,7 +64,7 @@ public static class A04_InsecureDesign
             });
         });
 
-        // VULNERABILITY A04: Predictable password reset token
+        // VULNERABILITY A06: Predictable password reset token
         group.MapPost("/password-reset", async (string username, AppDbContext db) =>
         {
             var user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);

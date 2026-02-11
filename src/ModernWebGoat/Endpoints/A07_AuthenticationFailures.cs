@@ -33,7 +33,7 @@ public static class A07_AuthenticationFailures
             var hash = Md5Hash(request.Password);
             if (user.PasswordHash != hash)
             {
-                // VULNERABILITY A04/A07: Tracked but never enforced
+                // VULNERABILITY A06/A07: Tracked but never enforced
                 user.FailedLoginAttempts++;
                 await db.SaveChangesAsync();
 
@@ -83,7 +83,7 @@ public static class A07_AuthenticationFailures
             var user = new Models.User
             {
                 Username = request.Username,
-                PasswordHash = Md5Hash(request.Password), // A02: MD5
+                PasswordHash = Md5Hash(request.Password), // A04: MD5
                 Email = request.Email ?? "",
                 Role = "user",
                 SSN = "",

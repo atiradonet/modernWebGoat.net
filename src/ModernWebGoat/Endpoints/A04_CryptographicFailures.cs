@@ -3,13 +3,13 @@ using System.Text;
 
 namespace ModernWebGoat.Endpoints;
 
-public static class A02_CryptographicFailures
+public static class A04_CryptographicFailures
 {
-    public static void MapA02CryptographicFailuresEndpoints(this WebApplication app)
+    public static void MapA04CryptographicFailuresEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/crypto").WithTags("A02 - Cryptographic Failures");
+        var group = app.MapGroup("/api/crypto").WithTags("A04 - Cryptographic Failures");
 
-        // VULNERABILITY A02: Weak encryption — DES with hardcoded key
+        // VULNERABILITY A04: Weak encryption — DES with hardcoded key
         group.MapGet("/encrypt", (string? data, IConfiguration config) =>
         {
             if (string.IsNullOrEmpty(data))
@@ -46,7 +46,7 @@ public static class A02_CryptographicFailures
             });
         });
 
-        // VULNERABILITY A02: Decrypt with same hardcoded DES key
+        // VULNERABILITY A04: Decrypt with same hardcoded DES key
         group.MapGet("/decrypt", (string? data, IConfiguration config) =>
         {
             if (string.IsNullOrEmpty(data))
@@ -77,7 +77,7 @@ public static class A02_CryptographicFailures
             }
         });
 
-        // VULNERABILITY A02: Hardcoded secrets exposed via API
+        // VULNERABILITY A04: Hardcoded secrets exposed via API
         group.MapGet("/secrets", (IConfiguration config) =>
         {
             return Results.Ok(new
@@ -103,7 +103,7 @@ public static class A02_CryptographicFailures
             });
         });
 
-        // VULNERABILITY A02: MD5 hash demo
+        // VULNERABILITY A04: MD5 hash demo
         group.MapGet("/hash", (string? data) =>
         {
             if (string.IsNullOrEmpty(data))

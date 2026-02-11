@@ -4,7 +4,7 @@
     ViewData["Title"] = "Reflected XSS - Search";
 }
 
-<h2>Site Search <span class="badge badge-red">A03</span></h2>
+<h2>Site Search <span class="badge badge-red">A05</span></h2>
 <p style="color: var(--text-muted);">Search the site. The query is reflected directly into the page without encoding.</p>
 
 <div class="alert alert-warning">
@@ -22,7 +22,7 @@
 {
     <div class="card">
         <h3>Search Results</h3>
-        <!-- VULNERABILITY A03: Reflected XSS — Html.Raw renders user input without encoding -->
+        <!-- VULNERABILITY A05: Reflected XSS — Html.Raw renders user input without encoding -->
         <p>You searched for: @Html.Raw(Model.Query)</p>
         <p style="color: var(--text-muted);">No results found.</p>
     </div>

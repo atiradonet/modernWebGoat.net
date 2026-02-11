@@ -6,7 +6,7 @@ public static class A08_DataIntegrityFailures
 {
     public static void MapA08DataIntegrityFailuresEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/deserialize").WithTags("A08 - Data Integrity Failures");
+        var group = app.MapGroup("/api/deserialize").WithTags("A08 - Software or Data Integrity Failures");
 
         // VULNERABILITY A08: Insecure deserialization with Newtonsoft.Json TypeNameHandling.All
         group.MapPost("/", async (HttpRequest request) =>

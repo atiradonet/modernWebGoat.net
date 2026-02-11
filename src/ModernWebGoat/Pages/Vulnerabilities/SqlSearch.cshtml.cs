@@ -27,7 +27,7 @@ public class SqlSearchModel : PageModel
             using var connection = new SqliteConnection(connectionString);
             connection.Open();
 
-            // VULNERABILITY A03: SQL Injection — string concatenation
+            // VULNERABILITY A05: SQL Injection — string concatenation
             ExecutedSql = $"SELECT Id, Name, Description, Price, Stock FROM Products WHERE Name LIKE '%{Query}%'";
             using var command = new SqliteCommand(ExecutedSql, connection);
             using var reader = command.ExecuteReader();

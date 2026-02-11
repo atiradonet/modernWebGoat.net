@@ -8,7 +8,7 @@ public static class A09_LoggingFailures
 {
     public static void MapA09LoggingFailuresEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/log").WithTags("A09 - Logging & Monitoring Failures");
+        var group = app.MapGroup("/api/log").WithTags("A09 - Security Logging and Alerting Failures");
 
         // VULNERABILITY A09: Logs sensitive data to console
         group.MapPost("/sensitive", async (SensitiveDataRequest request, AppDbContext db, ILogger<Program> logger) =>

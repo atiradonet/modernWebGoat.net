@@ -14,7 +14,7 @@ public static class A01_BrokenAccessControl
             var user = await db.Users.FindAsync(id);
             if (user is null) return Results.NotFound(new { error = "User not found" });
 
-            // VULNERABILITY A02: Returns SSN and credit card in plaintext
+            // VULNERABILITY A04: Returns SSN and credit card in plaintext
             return Results.Ok(new
             {
                 user.Id,
@@ -60,5 +60,67 @@ public static class A01_BrokenAccessControl
 
             return Results.File(filePath, "application/octet-stream", Path.GetFileName(name));
         }).WithTags("A01 - Broken Access Control");
+
+        // VULNERABILITY A01: SSRF — Unvalidated URL fetch (consolidated from OWASP 2021 A10)
+        var fetchGroup = app.MapGroup("/api/fetch").WithTags("A01 - Broken Access Control (SSRF)");
+
+        fetchGroup.MapGet("/", async (string? url, IHttpClientFactory httpClientFactory) =>
+        {
+            if (string.IsNullOrEmpty(url))
+                return Results.BadRequest(new { error = "Provide a URL via ?url=" });
+
+            try
+            {
+                // VULNERABLE: No URL validation — can access internal services,
+                // cloud metadata endpoints (169.254.169.254), localhost, etc.
+                var client = httpClientFactory.CreateClient();
+                var response = await client.GetAsync(url);
+                var content = await response.Content.ReadAsStringAsync();
+
+                return Results.Ok(new
+                {
+                    requestedUrl = url,
+                    statusCode = (int)response.StatusCode,
+                    contentLength = content.Length,
+                    content = content.Length > 5000 ? content[..5000] + "... (truncated)" : content,
+                    vulnerability = "No URL validation — attacker can access internal services, cloud metadata, etc."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new
+                {
+                    requestedUrl = url,
+                    error = ex.Message
+                });
+            }
+        });
+
+        // VULNERABILITY A01: SSRF — POST version for form submissions
+        fetchGroup.MapPost("/", async (FetchRequest request, IHttpClientFactory httpClientFactory) =>
+        {
+            if (string.IsNullOrEmpty(request.Url))
+                return Results.BadRequest(new { error = "Provide a URL" });
+
+            try
+            {
+                var client = httpClientFactory.CreateClient();
+                var response = await client.GetAsync(request.Url);
+                var content = await response.Content.ReadAsStringAsync();
+
+                return Results.Ok(new
+                {
+                    requestedUrl = request.Url,
+                    statusCode = (int)response.StatusCode,
+                    content = content.Length > 5000 ? content[..5000] + "... (truncated)" : content
+                });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
     }
+
+    private record FetchRequest(string Url);
 }

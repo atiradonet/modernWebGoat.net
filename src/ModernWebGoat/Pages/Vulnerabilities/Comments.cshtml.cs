@@ -33,7 +33,7 @@ public class CommentsModel : PageModel
             return Page();
         }
 
-        // VULNERABILITY A03: No HTML sanitization — stored XSS
+        // VULNERABILITY A05: No HTML sanitization — stored XSS
         var comment = new Comment
         {
             UserId = 0,

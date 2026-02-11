@@ -6,12 +6,12 @@ public class Order
     public int UserId { get; set; }
     public int ProductId { get; set; }
 
-    // VULNERABILITY A04: No validation — negative quantity credits the user
+    // VULNERABILITY A06: No validation — negative quantity credits the user
     public int Quantity { get; set; }
 
     public decimal TotalPrice { get; set; }
     public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
-    // VULNERABILITY A04: Coupon can be reused unlimited times
+    // VULNERABILITY A06: Coupon can be reused unlimited times
     public string? CouponCode { get; set; }
 }

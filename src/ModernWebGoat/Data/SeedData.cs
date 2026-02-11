@@ -6,7 +6,7 @@ namespace ModernWebGoat.Data;
 
 public static class SeedData
 {
-    // VULNERABILITY A02: MD5 hashing with no salt
+    // VULNERABILITY A04: MD5 hashing with no salt
     private static string Md5Hash(string input)
     {
         var bytes = MD5.HashData(Encoding.UTF8.GetBytes(input));
@@ -19,7 +19,7 @@ public static class SeedData
 
         if (db.Users.Any()) return;
 
-        // Seed users — passwords are trivially weak (A07) and hashed with MD5 (A02)
+        // Seed users — passwords are trivially weak (A07) and hashed with MD5 (A04)
         db.Users.AddRange(
             new User
             {
@@ -62,7 +62,7 @@ public static class SeedData
             new Product { Name = "Monitor", Description = "4K Ultra HD monitor", Price = 449.99m, Stock = 30 }
         );
 
-        // Seed comments — includes stored XSS payload (A03)
+        // Seed comments — includes stored XSS payload (A05)
         db.Comments.AddRange(
             new Comment
             {
