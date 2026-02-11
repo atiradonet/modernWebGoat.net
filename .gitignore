@@ -1,0 +1,30 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dll
+*.exe
+*.pdb
+*.cache
+
+## SQLite
+*.db
+*.db-shm
+*.db-wal
+
+## IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*~
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Secrets (ironically, we commit them on purpose for this project)
+# appsettings.*.json  — intentionally tracked for demo purposes

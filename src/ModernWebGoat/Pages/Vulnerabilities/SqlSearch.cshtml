@@ -1,0 +1,51 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.SqlSearchModel
+@{
+    ViewData["Title"] = "SQL Injection - Product Search";
+}
+
+<h2>Product Search <span class="badge badge-red">A03</span></h2>
+<p style="color: var(--text-muted);">Search for products by name. The query is concatenated directly into SQL.</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Try searching for <code>' OR 1=1 --</code> or <code>' UNION SELECT 1,Username,PasswordHash,1,1 FROM Users --</code>
+</div>
+
+<form method="get" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+        <input type="text" name="Query" value="@Model.Query" placeholder="Search products..." />
+    </div>
+    <button type="submit" class="btn">Search</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ExecutedSql))
+{
+    <h3>Executed SQL</h3>
+    <div class="result">@Model.ExecutedSql</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger" style="margin-top: 1rem;">@Model.Error</div>
+}
+
+@if (Model.Results.Any())
+{
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Stock</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Results)
+            {
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Name</td>
+                    <td>@p.Description</td>
+                    <td>$@p.Price</td>
+                    <td>@p.Stock</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

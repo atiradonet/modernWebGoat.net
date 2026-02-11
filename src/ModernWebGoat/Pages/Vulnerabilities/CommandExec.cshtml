@@ -1,0 +1,38 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.CommandExecModel
+@{
+    ViewData["Title"] = "Command Injection";
+}
+
+<h2>Network Diagnostic Tool <span class="badge badge-red">A03</span></h2>
+<p style="color: var(--text-muted);">Enter a hostname to ping. The input is passed directly to the shell.</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Try entering <code>127.0.0.1; id</code> or <code>127.0.0.1 && cat /etc/passwd</code>
+</div>
+
+<form method="post">
+    <div class="form-group">
+        <label>Hostname or IP</label>
+        <input type="text" asp-for="Host" placeholder="e.g., 127.0.0.1" />
+    </div>
+    <button type="submit" class="btn">Ping</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ExecutedCommand))
+{
+    <h3 style="margin-top: 1.5rem;">Executed Command</h3>
+    <div class="result">@Model.ExecutedCommand</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.CommandOutput))
+{
+    <h3 style="margin-top: 1rem;">Output</h3>
+    <div class="result">@Model.CommandOutput</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.CommandError))
+{
+    <h3 style="margin-top: 1rem;">Error</h3>
+    <div class="result" style="color: #fca5a5;">@Model.CommandError</div>
+}

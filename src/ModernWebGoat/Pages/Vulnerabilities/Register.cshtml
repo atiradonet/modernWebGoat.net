@@ -1,0 +1,40 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Register <span class="badge badge-red">A07</span></h2>
+<p style="color: var(--text-muted);">Create a new account. No password complexity requirements are enforced.</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Try registering with a single-character password like "a". MD5 hash is shown after registration.
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Success))
+{
+    <div class="alert alert-info">@Model.Success</div>
+}
+
+<div class="card">
+    <form method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" asp-for="Username" placeholder="Choose a username" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" asp-for="Email" placeholder="Email (optional)" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" asp-for="Password" placeholder="Any password (no requirements!)" />
+        </div>
+        <button type="submit" class="btn">Register</button>
+    </form>
+</div>

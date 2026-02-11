@@ -1,0 +1,36 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login <span class="badge badge-red">A07</span></h2>
+<p style="color: var(--text-muted);">No rate limiting, no account lockout, passwords hashed with MD5.</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Default credentials — admin:admin123, alice:password, bob:bob. No lockout after failed attempts.
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Success))
+{
+    <div class="alert alert-info">@Model.Success</div>
+}
+
+<div class="card">
+    <form method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" asp-for="Username" placeholder="Username" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" asp-for="Password" placeholder="Password" />
+        </div>
+        <button type="submit" class="btn">Login</button>
+    </form>
+</div>

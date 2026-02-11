@@ -1,0 +1,38 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.CommentsModel
+@{
+    ViewData["Title"] = "Stored XSS - Comments";
+}
+
+<h2>Comments <span class="badge badge-red">A03</span></h2>
+<p style="color: var(--text-muted);">Post a comment. Content is stored and rendered as raw HTML (no sanitization).</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Try posting <code>&lt;script&gt;alert('Stored XSS!')&lt;/script&gt;</code> or <code>&lt;img src=x onerror=alert(document.cookie)&gt;</code>
+</div>
+
+<div class="card">
+    <h3>Post a Comment</h3>
+    <form method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" asp-for="Username" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+            <label>Comment</label>
+            <textarea asp-for="Content" placeholder="Write your comment (HTML allowed!)..."></textarea>
+        </div>
+        <button type="submit" class="btn">Post Comment</button>
+    </form>
+</div>
+
+<h3 style="margin-top: 1.5rem;">All Comments</h3>
+@foreach (var comment in Model.Comments)
+{
+    <div class="card">
+        <strong>@comment.Username</strong>
+        <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.5rem;">@comment.CreatedAt.ToString("g")</span>
+        <!-- VULNERABILITY A03: Stored XSS — Html.Raw renders unsanitized content -->
+        <div style="margin-top: 0.5rem;">@Html.Raw(comment.Content)</div>
+    </div>
+}
