@@ -28,7 +28,7 @@ public class FetchUrlModel : PageModel
 
         try
         {
-            // VULNERABILITY A10: No URL validation — SSRF
+            // VULNERABILITY A01: No URL validation — SSRF
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync(Url);
             StatusCode = (int)response.StatusCode;

@@ -19,7 +19,7 @@ public class CommandExecModel : PageModel
     {
         if (string.IsNullOrEmpty(Host)) return;
 
-        // VULNERABILITY A03: Command injection — user input passed to shell
+        // VULNERABILITY A05: Command injection — user input passed to shell
         ExecutedCommand = $"ping -c 2 {Host}";
 
         var process = new Process

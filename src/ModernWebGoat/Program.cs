@@ -15,10 +15,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Razor Pages
 builder.Services.AddRazorPages();
 
-// HttpClient for SSRF demos (A10)
+// HttpClient for SSRF demos (A01) and supply chain demos (A03)
 builder.Services.AddHttpClient();
 
-// VULNERABILITY A05: No rate limiting configured
+// VULNERABILITY A02: No rate limiting configured
 // VULNERABILITY A07: Insecure JWT configuration
 var jwtKey = builder.Configuration["Jwt:Key"]!; // Only 5 chars! (A07)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -44,7 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// VULNERABILITY A01/A05: Overly permissive CORS
+// VULNERABILITY A01/A02: Overly permissive CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -64,17 +64,17 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(db);
 }
 
-// VULNERABILITY A05: Developer exception page enabled unconditionally (exposes stack traces in production)
+// VULNERABILITY A02: Developer exception page enabled unconditionally (exposes stack traces in production)
 app.UseDeveloperExceptionPage();
 
-// VULNERABILITY A05: No HTTPS redirection
+// VULNERABILITY A02: No HTTPS redirection
 // app.UseHttpsRedirection();  — intentionally omitted
 
-// VULNERABILITY A05: No security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
+// VULNERABILITY A02: No security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
 
 app.UseStaticFiles();
 
-// VULNERABILITY A05: Directory browsing enabled — exposes file system structure
+// VULNERABILITY A02: Directory browsing enabled — exposes file system structure
 app.UseDirectoryBrowser(new DirectoryBrowserOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -86,16 +86,17 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map all vulnerability endpoint groups
-app.MapA01BrokenAccessControlEndpoints();
-app.MapA02CryptographicFailuresEndpoints();
-app.MapA03InjectionEndpoints();
-app.MapA04InsecureDesignEndpoints();
-app.MapA05SecurityMisconfigurationEndpoints();
-app.MapA07AuthenticationFailuresEndpoints();
-app.MapA08DataIntegrityFailuresEndpoints();
-app.MapA09LoggingFailuresEndpoints();
-app.MapA10SsrfEndpoints();
+// Map all OWASP Top 10 (2025) vulnerability endpoint groups
+app.MapA01BrokenAccessControlEndpoints();       // A01: Broken Access Control (+ SSRF)
+app.MapA02SecurityMisconfigurationEndpoints();   // A02: Security Misconfiguration
+app.MapA03SupplyChainFailuresEndpoints();        // A03: Software Supply Chain Failures (NEW)
+app.MapA04CryptographicFailuresEndpoints();      // A04: Cryptographic Failures
+app.MapA05InjectionEndpoints();                  // A05: Injection
+app.MapA06InsecureDesignEndpoints();             // A06: Insecure Design
+app.MapA07AuthenticationFailuresEndpoints();     // A07: Authentication Failures
+app.MapA08DataIntegrityFailuresEndpoints();      // A08: Software or Data Integrity Failures
+app.MapA09LoggingFailuresEndpoints();            // A09: Security Logging and Alerting Failures
+app.MapA10ExceptionalConditionsEndpoints();      // A10: Mishandling of Exceptional Conditions (NEW)
 
 app.MapRazorPages();
 

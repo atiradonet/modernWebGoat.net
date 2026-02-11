@@ -4,7 +4,7 @@
     ViewData["Title"] = "Home";
 }
 
-<h2>OWASP Top 10 (2021) Vulnerability Index</h2>
+<h2>OWASP Top 10 (2025) Vulnerability Index</h2>
 <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
     A deliberately vulnerable ASP.NET Core application for secure coding training.
     Each category below contains exploitable vulnerabilities.
@@ -16,16 +16,38 @@
 
 <div class="card">
     <h3>A01 &mdash; Broken Access Control</h3>
-    <p>IDOR, missing authorization, path traversal, CORS misconfiguration</p>
+    <p>IDOR, missing authorization, path traversal, CORS misconfiguration, SSRF</p>
     <ul>
         <li><a href="/api/users/1">API: Get user by ID (IDOR)</a></li>
         <li><a href="/api/admin/users">API: Admin user list (no auth)</a></li>
         <li><a href="/Vulnerabilities/FileDownload">Page: File Download (path traversal)</a></li>
+        <li><a href="/Vulnerabilities/FetchUrl">Page: Fetch URL (SSRF)</a></li>
+        <li><a href="/api/fetch?url=http://example.com">API: URL fetch (SSRF)</a></li>
     </ul>
 </div>
 
 <div class="card">
-    <h3>A02 &mdash; Cryptographic Failures</h3>
+    <h3>A02 &mdash; Security Misconfiguration</h3>
+    <p>Debug mode, directory browsing, missing headers, detailed errors</p>
+    <ul>
+        <li><a href="/api/config/error">API: Trigger detailed error</a></li>
+        <li><a href="/api/config/info">API: App configuration info</a></li>
+        <li><a href="/uploads/">Browse: Directory listing</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A03 &mdash; Software Supply Chain Failures <span class="badge badge-yellow">NEW</span></h3>
+    <p>No SBOM, unpinned dependencies, unverified package downloads</p>
+    <ul>
+        <li><a href="/api/supply-chain/dependencies">API: Dependency inventory</a></li>
+        <li><a href="/api/supply-chain/sbom">API: SBOM status</a></li>
+        <li><a href="/api/supply-chain/pinning">API: Dependency pinning check</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A04 &mdash; Cryptographic Failures</h3>
     <p>MD5 password hashing, hardcoded secrets, weak encryption, data exposure</p>
     <ul>
         <li><a href="/api/crypto/encrypt?data=hello">API: DES encryption (weak cipher)</a></li>
@@ -35,7 +57,7 @@
 </div>
 
 <div class="card">
-    <h3>A03 &mdash; Injection</h3>
+    <h3>A05 &mdash; Injection</h3>
     <p>SQL injection, command injection, reflected XSS, stored XSS</p>
     <ul>
         <li><a href="/Vulnerabilities/SqlSearch">Page: Product Search (SQL injection)</a></li>
@@ -46,29 +68,11 @@
 </div>
 
 <div class="card">
-    <h3>A04 &mdash; Insecure Design</h3>
+    <h3>A06 &mdash; Insecure Design</h3>
     <p>No rate limiting, predictable tokens, negative-quantity orders, coupon reuse</p>
     <ul>
         <li><a href="/api/orders">API: Create order (negative quantity)</a></li>
         <li><a href="/api/password-reset?username=admin">API: Password reset (predictable token)</a></li>
-    </ul>
-</div>
-
-<div class="card">
-    <h3>A05 &mdash; Security Misconfiguration</h3>
-    <p>Debug mode, directory browsing, missing headers, detailed errors</p>
-    <ul>
-        <li><a href="/api/config/error">API: Trigger detailed error</a></li>
-        <li><a href="/api/config/info">API: App configuration info</a></li>
-        <li><a href="/uploads/">Browse: Directory listing</a></li>
-    </ul>
-</div>
-
-<div class="card">
-    <h3>A06 &mdash; Vulnerable and Outdated Components</h3>
-    <p>Dependency inventory for review</p>
-    <ul>
-        <li><a href="/api/config/dependencies">API: Dependency list</a></li>
     </ul>
 </div>
 
@@ -83,7 +87,7 @@
 </div>
 
 <div class="card">
-    <h3>A08 &mdash; Data Integrity Failures</h3>
+    <h3>A08 &mdash; Software or Data Integrity Failures</h3>
     <p>Insecure deserialization with Newtonsoft.Json TypeNameHandling.All</p>
     <ul>
         <li><a href="/api/deserialize">API: JSON deserialization (POST)</a></li>
@@ -91,7 +95,7 @@
 </div>
 
 <div class="card">
-    <h3>A09 &mdash; Logging &amp; Monitoring Failures</h3>
+    <h3>A09 &mdash; Security Logging &amp; Alerting Failures</h3>
     <p>Sensitive data in logs, missing audit trails</p>
     <ul>
         <li><a href="/api/log/sensitive">API: Log sensitive data (POST)</a></li>
@@ -99,10 +103,12 @@
 </div>
 
 <div class="card">
-    <h3>A10 &mdash; Server-Side Request Forgery (SSRF)</h3>
-    <p>Unvalidated URL fetching, metadata endpoint access</p>
+    <h3>A10 &mdash; Mishandling of Exceptional Conditions <span class="badge badge-yellow">NEW</span></h3>
+    <p>Fail-open auth, null dereference, integer overflow, TOCTOU race conditions</p>
     <ul>
-        <li><a href="/Vulnerabilities/FetchUrl">Page: Fetch URL (SSRF)</a></li>
-        <li><a href="/api/fetch?url=http://example.com">API: URL fetch</a></li>
+        <li><a href="/api/exceptional/fail-open?token=">API: Fail-open auth bypass</a></li>
+        <li><a href="/api/exceptional/null-deref?id=99999">API: Null dereference leak</a></li>
+        <li><a href="/api/exceptional/overflow?price=2147483647&quantity=2">API: Integer overflow</a></li>
+        <li><a href="/api/exceptional/info">API: Category info</a></li>
     </ul>
 </div>

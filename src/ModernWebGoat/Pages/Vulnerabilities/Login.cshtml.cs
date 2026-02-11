@@ -43,7 +43,7 @@ public class LoginModel : PageModel
         var hash = Md5Hash(Password);
         if (user.PasswordHash != hash)
         {
-            // VULNERABILITY A04/A07: Tracked but never enforced — no lockout
+            // VULNERABILITY A06/A07: Tracked but never enforced — no lockout
             user.FailedLoginAttempts++;
             await _db.SaveChangesAsync();
 

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Stored XSS - Comments";
 }
 
-<h2>Comments <span class="badge badge-red">A03</span></h2>
+<h2>Comments <span class="badge badge-red">A05</span></h2>
 <p style="color: var(--text-muted);">Post a comment. Content is stored and rendered as raw HTML (no sanitization).</p>
 
 <div class="alert alert-warning">
@@ -32,7 +32,7 @@
     <div class="card">
         <strong>@comment.Username</strong>
         <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.5rem;">@comment.CreatedAt.ToString("g")</span>
-        <!-- VULNERABILITY A03: Stored XSS — Html.Raw renders unsanitized content -->
+        <!-- VULNERABILITY A05: Stored XSS — Html.Raw renders unsanitized content -->
         <div style="margin-top: 0.5rem;">@Html.Raw(comment.Content)</div>
     </div>
 }

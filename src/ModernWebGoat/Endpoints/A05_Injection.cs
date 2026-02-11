@@ -4,13 +4,13 @@ using ModernWebGoat.Data;
 
 namespace ModernWebGoat.Endpoints;
 
-public static class A03_Injection
+public static class A05_Injection
 {
-    public static void MapA03InjectionEndpoints(this WebApplication app)
+    public static void MapA05InjectionEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/injection").WithTags("A03 - Injection");
+        var group = app.MapGroup("/api/injection").WithTags("A05 - Injection");
 
-        // VULNERABILITY A03: SQL Injection via string concatenation
+        // VULNERABILITY A05: SQL Injection via string concatenation
         group.MapGet("/products", (string? q, IConfiguration config) =>
         {
             if (string.IsNullOrEmpty(q))
@@ -41,7 +41,7 @@ public static class A03_Injection
             return Results.Ok(new { query = q, sql, results = products });
         });
 
-        // VULNERABILITY A03: Command Injection
+        // VULNERABILITY A05: Command Injection
         group.MapPost("/exec", (CommandRequest request) =>
         {
             if (string.IsNullOrEmpty(request.Host))
@@ -68,7 +68,7 @@ public static class A03_Injection
             return Results.Ok(new { command = $"ping -c 2 {request.Host}", output, error });
         });
 
-        // VULNERABILITY A03: Stored XSS — comments stored and rendered as raw HTML
+        // VULNERABILITY A05: Stored XSS — comments stored and rendered as raw HTML
         group.MapGet("/comments", async (AppDbContext db) =>
         {
             var comments = await db.Comments
