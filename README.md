@@ -115,17 +115,67 @@ Open http://localhost:5000 — the landing page links to every vulnerability cat
 | TOCTOU race condition (withdraw) | `POST /api/exceptional/withdraw` |
 | Category info | `GET /api/exceptional/info` |
 
+## Container Security (Deliberately Insecure)
+
+Build and run with Docker:
+
+```bash
+docker compose up --build
+# App available at http://localhost:8080
+```
+
+The `Dockerfile` and `docker-compose.yml` are loaded with security anti-patterns for training, mapped to both OWASP Top 10 2025 and the [OWASP Docker Top 10](https://owasp.org/www-project-docker-top-10/):
+
+| Misconfiguration | File | OWASP | Docker Top 10 |
+|------------------|------|-------|---------------|
+| Running as root (no `USER` directive) | Dockerfile | A02 | D01 |
+| `latest` tag — non-reproducible builds | Dockerfile | A03 | D02 |
+| Full SDK image in production — massive attack surface | Dockerfile | A02 | D02/D04 |
+| Unnecessary packages installed (curl, wget, vim, ssh) | Dockerfile | A02 | D04 |
+| Hardcoded secrets in `ENV` — visible via `docker inspect` | Dockerfile | A04 | D06 |
+| No `.dockerignore` — `.git`, secrets, build artifacts leaked | Dockerfile | A02/A03 | D06/D08 |
+| No multi-stage build — dev dependencies in final image | Dockerfile | A03 | D04 |
+| Debug port (4848) exposed | Dockerfile | A02 | D03 |
+| Default bridge network — no segmentation | docker-compose.yml | A02 | D03 |
+| Privileged mode enabled | docker-compose.yml | A02 | D04 |
+| Docker socket mounted — container can control daemon | docker-compose.yml | A02 | D04 |
+| Host `/etc` and `/tmp` mounted | docker-compose.yml | A01 | D04 |
+| All capabilities added (NET_ADMIN, SYS_ADMIN, SYS_PTRACE) | docker-compose.yml | A02 | D04 |
+| No AppArmor/seccomp profiles | docker-compose.yml | A02 | D05 |
+| Secrets in plaintext in compose file | docker-compose.yml | A04 | D06 |
+| No resource limits (memory, CPU, PIDs) | docker-compose.yml | A02/A10 | D07 |
+| No read-only root filesystem | docker-compose.yml | A02 | D09 |
+| No health check | docker-compose.yml | A02 | D10 |
+| No log rotation limit | docker-compose.yml | A09 | D10 |
+
+### OWASP Docker Top 10 Coverage
+
+| ID | Control | Status |
+|----|---------|--------|
+| D01 | Secure User Mapping | Violated — running as root |
+| D02 | Patch Management Strategy | Violated — unpinned `latest` tag, full SDK image |
+| D03 | Network Segmentation and Firewalling | Violated — default bridge, debug port exposed |
+| D04 | Secure Defaults and Hardening | Violated — privileged, socket mount, extra packages |
+| D05 | Maintain Security Contexts | Violated — no AppArmor/seccomp |
+| D06 | Protect Secrets | Violated — ENV vars, plaintext in compose |
+| D07 | Resource Protection | Violated — no memory/CPU/PID limits |
+| D08 | Container Image Integrity and Origin | Partially — no `.dockerignore`, unsigned images |
+| D09 | Follow Immutable Paradigm | Violated — writable root fs, host mounts |
+| D10 | Logging | Violated — no log rotation limit |
+
 ## Project Structure
 
 ```
-src/ModernWebGoat/
-├── Program.cs              # Entry point + all misconfigurations
-├── appsettings.json        # Hardcoded secrets (A04)
-├── Data/                   # DbContext + seed data
-├── Models/                 # User, Product, Order, Comment, AuditLog
-├── Endpoints/              # Minimal API endpoints by OWASP category
-├── Pages/                  # Razor Pages (interactive vulnerability demos)
-└── wwwroot/                # Static files + uploads directory
+├── Dockerfile              # Deliberately insecure container build
+├── docker-compose.yml      # Insecure orchestration config
+└── src/ModernWebGoat/
+    ├── Program.cs              # Entry point + all misconfigurations
+    ├── appsettings.json        # Hardcoded secrets (A04)
+    ├── Data/                   # DbContext + seed data
+    ├── Models/                 # User, Product, Order, Comment, AuditLog
+    ├── Endpoints/              # Minimal API endpoints by OWASP category
+    ├── Pages/                  # Razor Pages (interactive vulnerability demos)
+    └── wwwroot/                # Static files + uploads directory
 ```
 
 ## License

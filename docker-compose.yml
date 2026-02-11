@@ -1,0 +1,88 @@
+# =============================================================================
+# ModernWebGoat.NET — DELIBERATELY INSECURE docker-compose
+# =============================================================================
+# This compose file contains numerous security anti-patterns for training.
+# Do NOT use this as a reference for production deployments.
+# =============================================================================
+
+services:
+  webgoat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # VULNERABILITY: Running in privileged mode — full host kernel access (A02)
+    # Attacker with container access can escape to the host
+    privileged: true
+
+    # VULNERABILITY: Mounting Docker socket — container can control Docker daemon (A02)
+    # This allows creating new containers, escaping to host, reading other containers
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # VULNERABILITY: Mounting host filesystem — read/write access to host (A01)
+      - /etc:/host-etc:ro
+      - /tmp:/host-tmp
+      # VULNERABILITY: Named volume with no encryption — data at rest unprotected (A04)
+      - webgoat-data:/app/data
+
+    ports:
+      # VULNERABILITY: Binding to all interfaces (0.0.0.0) — accessible from any network (A02)
+      - "8080:5000"
+      # VULNERABILITY: Debug port exposed to host (A02)
+      - "4848:4848"
+
+    environment:
+      # VULNERABILITY: Secrets in plaintext in compose file (A04)
+      - ASPNETCORE_ENVIRONMENT=Development
+      - JWT_SECRET=s3cr3
+      - DB_PASSWORD=admin123
+      - API_KEY=FAKE-AKIAIOSFODNN7EXAMPLE
+      - PAYMENT_GATEWAY_KEY=FAKE-pay-gateway-key-do-not-use
+
+    # VULNERABILITY: No resource limits — denial of service risk (A02/A10)
+    # No mem_limit, cpus, pids_limit — container can exhaust host resources
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 512M
+    #       cpus: '0.5'
+
+    # VULNERABILITY: No security_opt — no AppArmor/seccomp profiles (A02)
+    # security_opt:
+    #   - no-new-privileges:true
+    #   - apparmor:docker-default
+
+    # VULNERABILITY: Adding all Linux capabilities (A02)
+    # NET_ADMIN allows network manipulation, SYS_ADMIN is near-root
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_PTRACE
+
+    # VULNERABILITY: No read-only root filesystem (A02)
+    # read_only: true  — intentionally omitted
+
+    # VULNERABILITY: No health check — orchestrator can't detect failures (A02)
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:5000"]
+    #   interval: 30s
+    #   timeout: 5s
+    #   retries: 3
+
+    # VULNERABILITY: No restart policy — manual intervention required on crash
+    # restart: unless-stopped  — intentionally omitted
+
+    # VULNERABILITY: Default bridge network — no network segmentation (A02)
+    # No custom network with isolation
+
+    # VULNERABILITY: No logging limits — logs can fill disk (A09)
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        # No max-file limit — unbounded log rotation
+
+volumes:
+  webgoat-data:
+    # VULNERABILITY: No encryption driver — data at rest unprotected (A04)
+    driver: local
