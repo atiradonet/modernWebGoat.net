@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ModernWebGoat</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>ModernWebGoat.NET</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/Vulnerabilities/Login">Login</a>
+                <a href="/Vulnerabilities/Register">Register</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            ModernWebGoat.NET &mdash; Deliberately Vulnerable Application for Security Training
+        </div>
+    </footer>
+</body>
+</html>

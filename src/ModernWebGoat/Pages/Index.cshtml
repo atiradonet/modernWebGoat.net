@@ -1,0 +1,108 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<h2>OWASP Top 10 (2021) Vulnerability Index</h2>
+<p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+    A deliberately vulnerable ASP.NET Core application for secure coding training.
+    Each category below contains exploitable vulnerabilities.
+</p>
+
+<div class="alert alert-danger">
+    <strong>WARNING:</strong> This application is intentionally insecure. Do NOT deploy to any network-accessible environment.
+</div>
+
+<div class="card">
+    <h3>A01 &mdash; Broken Access Control</h3>
+    <p>IDOR, missing authorization, path traversal, CORS misconfiguration</p>
+    <ul>
+        <li><a href="/api/users/1">API: Get user by ID (IDOR)</a></li>
+        <li><a href="/api/admin/users">API: Admin user list (no auth)</a></li>
+        <li><a href="/Vulnerabilities/FileDownload">Page: File Download (path traversal)</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A02 &mdash; Cryptographic Failures</h3>
+    <p>MD5 password hashing, hardcoded secrets, weak encryption, data exposure</p>
+    <ul>
+        <li><a href="/api/crypto/encrypt?data=hello">API: DES encryption (weak cipher)</a></li>
+        <li><a href="/api/crypto/secrets">API: Exposed secrets</a></li>
+        <li><a href="/api/users/1">API: User profile with SSN/CC in plaintext</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A03 &mdash; Injection</h3>
+    <p>SQL injection, command injection, reflected XSS, stored XSS</p>
+    <ul>
+        <li><a href="/Vulnerabilities/SqlSearch">Page: Product Search (SQL injection)</a></li>
+        <li><a href="/Vulnerabilities/CommandExec">Page: Command Execution (OS injection)</a></li>
+        <li><a href="/Vulnerabilities/Search">Page: Search (reflected XSS)</a></li>
+        <li><a href="/Vulnerabilities/Comments">Page: Comments (stored XSS)</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A04 &mdash; Insecure Design</h3>
+    <p>No rate limiting, predictable tokens, negative-quantity orders, coupon reuse</p>
+    <ul>
+        <li><a href="/api/orders">API: Create order (negative quantity)</a></li>
+        <li><a href="/api/password-reset?username=admin">API: Password reset (predictable token)</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A05 &mdash; Security Misconfiguration</h3>
+    <p>Debug mode, directory browsing, missing headers, detailed errors</p>
+    <ul>
+        <li><a href="/api/config/error">API: Trigger detailed error</a></li>
+        <li><a href="/api/config/info">API: App configuration info</a></li>
+        <li><a href="/uploads/">Browse: Directory listing</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A06 &mdash; Vulnerable and Outdated Components</h3>
+    <p>Dependency inventory for review</p>
+    <ul>
+        <li><a href="/api/config/dependencies">API: Dependency list</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A07 &mdash; Authentication Failures</h3>
+    <p>Weak passwords, no lockout, insecure JWT, session fixation</p>
+    <ul>
+        <li><a href="/Vulnerabilities/Login">Page: Login (no lockout)</a></li>
+        <li><a href="/Vulnerabilities/Register">Page: Register (weak password policy)</a></li>
+        <li><a href="/api/auth/login">API: JWT login</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A08 &mdash; Data Integrity Failures</h3>
+    <p>Insecure deserialization with Newtonsoft.Json TypeNameHandling.All</p>
+    <ul>
+        <li><a href="/api/deserialize">API: JSON deserialization (POST)</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A09 &mdash; Logging &amp; Monitoring Failures</h3>
+    <p>Sensitive data in logs, missing audit trails</p>
+    <ul>
+        <li><a href="/api/log/sensitive">API: Log sensitive data (POST)</a></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>A10 &mdash; Server-Side Request Forgery (SSRF)</h3>
+    <p>Unvalidated URL fetching, metadata endpoint access</p>
+    <ul>
+        <li><a href="/Vulnerabilities/FetchUrl">Page: Fetch URL (SSRF)</a></li>
+        <li><a href="/api/fetch?url=http://example.com">API: URL fetch</a></li>
+    </ul>
+</div>

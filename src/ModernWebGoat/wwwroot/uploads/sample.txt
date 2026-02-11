@@ -1,0 +1,2 @@
+This is a sample file for the path traversal demo.
+If you can read files outside the uploads directory, you've found the vulnerability!

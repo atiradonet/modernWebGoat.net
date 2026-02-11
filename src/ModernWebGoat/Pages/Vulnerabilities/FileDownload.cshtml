@@ -1,0 +1,36 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.FileDownloadModel
+@{
+    ViewData["Title"] = "Path Traversal - File Download";
+}
+
+<h2>File Download <span class="badge badge-red">A01</span></h2>
+<p style="color: var(--text-muted);">Download files from the uploads directory. The file name is not sanitized.</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Try requesting <code>../../../etc/passwd</code> or <code>../../appsettings.json</code>
+</div>
+
+<form method="get" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+        <input type="text" name="FileName" value="@Model.FileName" placeholder="e.g., sample.txt" />
+    </div>
+    <button type="submit" class="btn">Download</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ResolvedPath))
+{
+    <h3>Resolved Path</h3>
+    <div class="result">@Model.ResolvedPath</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger" style="margin-top: 1rem;">@Model.Error</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.FileContent))
+{
+    <h3 style="margin-top: 1rem;">File Content</h3>
+    <div class="result">@Model.FileContent</div>
+}

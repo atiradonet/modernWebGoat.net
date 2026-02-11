@@ -1,0 +1,32 @@
+@page
+@model ModernWebGoat.Pages.Vulnerabilities.FetchUrlModel
+@{
+    ViewData["Title"] = "SSRF - Fetch URL";
+}
+
+<h2>URL Fetcher <span class="badge badge-red">A10</span></h2>
+<p style="color: var(--text-muted);">Fetch content from any URL. No validation is performed on the target address.</p>
+
+<div class="alert alert-warning">
+    <strong>Hint:</strong> Try fetching <code>http://169.254.169.254/latest/meta-data/</code> (AWS metadata),
+    <code>http://localhost:5000/api/admin/users</code> (internal API), or <code>file:///etc/passwd</code>
+</div>
+
+<form method="post">
+    <div class="form-group">
+        <label>URL to fetch</label>
+        <input type="text" asp-for="Url" placeholder="https://example.com" />
+    </div>
+    <button type="submit" class="btn">Fetch</button>
+</form>
+
+@if (Model.StatusCode.HasValue)
+{
+    <h3 style="margin-top: 1.5rem;">Response (HTTP @Model.StatusCode)</h3>
+    <div class="result">@Model.ResponseContent</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger" style="margin-top: 1rem;">@Model.Error</div>
+}
