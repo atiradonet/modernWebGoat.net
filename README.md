@@ -115,17 +115,51 @@ Open http://localhost:5000 — the landing page links to every vulnerability cat
 | TOCTOU race condition (withdraw) | `POST /api/exceptional/withdraw` |
 | Category info | `GET /api/exceptional/info` |
 
+## Container Security (Deliberately Insecure)
+
+Build and run with Docker:
+
+```bash
+docker compose up --build
+```
+
+The `Dockerfile` and `docker-compose.yml` are loaded with security anti-patterns for training:
+
+| Misconfiguration | File | OWASP |
+|------------------|------|-------|
+| `latest` tag — non-reproducible builds | Dockerfile | A03 |
+| Full SDK image in production — massive attack surface | Dockerfile | A02 |
+| Running as root (no `USER` directive) | Dockerfile | A02 |
+| Hardcoded secrets in `ENV` — visible via `docker inspect` | Dockerfile | A04 |
+| Unnecessary packages installed (curl, wget, vim, ssh) | Dockerfile | A02 |
+| No `.dockerignore` — `.git`, secrets, build artifacts leaked | Dockerfile | A02/A03 |
+| No multi-stage build — dev dependencies in final image | Dockerfile | A03 |
+| Debug port (4848) exposed | Dockerfile | A02 |
+| Privileged mode enabled | docker-compose.yml | A02 |
+| Docker socket mounted — container can control daemon | docker-compose.yml | A02 |
+| Host `/etc` and `/tmp` mounted | docker-compose.yml | A01 |
+| All capabilities added (NET_ADMIN, SYS_ADMIN, SYS_PTRACE) | docker-compose.yml | A02 |
+| No resource limits (memory, CPU, PIDs) | docker-compose.yml | A02/A10 |
+| No health check | docker-compose.yml | A02 |
+| No AppArmor/seccomp profiles | docker-compose.yml | A02 |
+| No read-only root filesystem | docker-compose.yml | A02 |
+| Secrets in plaintext in compose file | docker-compose.yml | A04 |
+| Default bridge network — no segmentation | docker-compose.yml | A02 |
+| No log rotation limit | docker-compose.yml | A09 |
+
 ## Project Structure
 
 ```
-src/ModernWebGoat/
-├── Program.cs              # Entry point + all misconfigurations
-├── appsettings.json        # Hardcoded secrets (A04)
-├── Data/                   # DbContext + seed data
-├── Models/                 # User, Product, Order, Comment, AuditLog
-├── Endpoints/              # Minimal API endpoints by OWASP category
-├── Pages/                  # Razor Pages (interactive vulnerability demos)
-└── wwwroot/                # Static files + uploads directory
+├── Dockerfile              # Deliberately insecure container build
+├── docker-compose.yml      # Insecure orchestration config
+└── src/ModernWebGoat/
+    ├── Program.cs              # Entry point + all misconfigurations
+    ├── appsettings.json        # Hardcoded secrets (A04)
+    ├── Data/                   # DbContext + seed data
+    ├── Models/                 # User, Product, Order, Comment, AuditLog
+    ├── Endpoints/              # Minimal API endpoints by OWASP category
+    ├── Pages/                  # Razor Pages (interactive vulnerability demos)
+    └── wwwroot/                # Static files + uploads directory
 ```
 
 ## License
